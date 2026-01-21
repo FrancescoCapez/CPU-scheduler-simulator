@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CPU scheduler simulator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h2>CPU scheduler simulator</h2>
+    <div>
+        <div>
+            <button id="idStart" onclick="start()"> Start </button>
+            <button id="idReset" onclick="reset()"> Reset </button>
+        </div>
+        <div>
+            <table class="table" id="idTable">
+                <thead class="table-light">
+                <tr>
+                    <th>Process</th>
+                    <th>Arrival Time</th>
+                    <th>Burst Time</th>
+                    <th>Remaining Burst Time</th>
+                    <th>Priority</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="output" style="display: none">
+        <p>Di seguito l'evoluzione dei processi: </p>
+        <div class="progress" >
+            <div class="progress-bar progress-bar-success" role="progressbar" style="width:40%"> PROCESSO 1 </div>
+            <div class="progress-bar progress-bar-warning" role="progressbar" style="width:35%"> PROCESSO 2 </div>
+            <div class="progress-bar progress-bar-danger" role="progressbar" style="width:25%"> PROCESSO 3 </div>
+        </div>
+    </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
