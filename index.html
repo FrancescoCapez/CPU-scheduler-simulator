@@ -1,44 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
-    <title>CPU scheduler simulator</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPU Scheduler Pro - SRTF</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
-    <h2>CPU scheduler simulator</h2>
-    <div>
-        <div>
-            <button id="idStart" onclick="start()"> Start </button>
-            <button id="idReset" onclick="reset()"> Reset </button>
-        </div>
-        <div>
-            <table class="table" id="idTable">
-                <thead class="table-light">
+    <header>
+        <h1>CPU Scheduler Simulator</h1>
+        <p>Shortest Remaining Time First (SRTF):è un algoritmo di scheduling preemptive della CPU.
+            A ogni istante la CPU assegna il processore al processo con minor tempo di esecuzione rimanente.
+            Se arriva un nuovo processo con tempo rimanente più breve, interrompe quello in esecuzione.
+            Riduce il tempo medio di attesa, ma può causare starvation per processi lunghi.</p>
+    </header>
+
+    <div class="main-content">
+        <section class="input-panel">
+            <h3>Aggiungi Processo</h3>
+            <div class="form-group">
+                <label>ID Processo</label>
+                <input type="text" id="procId" placeholder="es. P1">
+            </div>
+            <div class="form-group">
+                <label>Arrival Time</label>
+                <input type="number" id="arrivalTime" min="0" placeholder="0">
+            </div>
+            <div class="form-group">
+                <label>Burst Time</label>
+                <input type="number" id="burstTime" min="1" placeholder="5">
+            </div>
+            <button id="btnAdd" class="btn-secondary">Inserisci Processo</button>
+            <div class="actions">
+                <button id="btnStart" class="btn-primary">Avvia Simulazione</button>
+                <button id="btnReset" class="btn-danger">Reset</button>
+            </div>
+        </section>
+
+        <section class="display-panel">
+            <h3>Lista Processi</h3>
+            <table id="processTable">
+                <thead>
                 <tr>
-                    <th>Process</th>
-                    <th>Arrival Time</th>
-                    <th>Burst Time</th>
-                    <th>Remaining Burst Time</th>
-                    <th>Priority</th>
+                    <th>Processo</th>
+                    <th>Arrivo</th>
+                    <th>Burst</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="processList">
                 </tbody>
             </table>
-        </div>
-    </div>
-    <div id="output" style="display: none">
-        <p>Di seguito l'evoluzione dei processi: </p>
-        <div class="progress" >
-            <div class="progress-bar progress-bar-success" role="progressbar" style="width:40%"> PROCESSO 1 </div>
-            <div class="progress-bar progress-bar-warning" role="progressbar" style="width:35%"> PROCESSO 2 </div>
-            <div class="progress-bar progress-bar-danger" role="progressbar" style="width:25%"> PROCESSO 3 </div>
-        </div>
+
+            <div id="resultArea" class="hidden">
+                <h3>Diagramma di Gantt</h3>
+                <div id="ganttChart" class="gantt-container"></div>
+            </div>
+        </section>
     </div>
 </div>
 <script src="script.js"></script>

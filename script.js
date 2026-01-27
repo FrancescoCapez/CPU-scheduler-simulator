@@ -1,48 +1,104 @@
-console.log('Happy developing ✨')
+let processes = [];
 
-// DICHIARAZIONE VARIABILI GLOBALI
-let p = []; //ARRAY PROCESSI
-let at = []; //ARRAY TEMPO DI ARRIVO
-let bt = []; //ARRAY TEMPO DI BURST
-let rbt = []; //ARRAY TEMPO DI BURST RIMANENTE
-let pr = []; //ARRAY PRIORITÀ
+document.getElementById('btnAdd').addEventListener('click', () => {
+    const id = document.getElementById('procId').value || `P${processes.length + 1}`;
+    const arrival = parseInt(document.getElementById('arrivalTime').value) || 0;
+    const burst = parseInt(document.getElementById('burstTime').value) || 1;
 
-/* FUNZIONE RESET
- La tabella dei processi viene sostituita con una tabella vuota
- Il contenuto dei div relativi all'output viene cancellato
-*/
-function reset(){
-    let tableEl = document.getElementById("idTable");
-    let oldTBodyEl = tableEl.getElementsByTagName('tbody')[0];
-    let newTBodyEl = document.createElement('tbody');
+    processes.push({ id, arrival, burst, remaining: burst, completed: false });
+    updateTable();
 
-    tableEl.replaceChild(newTBodyEl, oldTBodyEl);
-    document.getElementById("output").style.display = "none";
+    document.getElementById('procId').value = "";
+    document.getElementById('arrivalTime').value = "";
+    document.getElementById('burstTime').value = "";
+});
+
+function updateTable() {
+    const tbody = document.getElementById('processList');
+    tbody.innerHTML = processes.map(p => `
+        <tr>
+            <td>${p.id}</td>
+            <td>${p.arrival}</td>
+            <td>${p.burst}</td>
+        </tr>
+    `).join('');
 }
-/* FUNZIONE START
- si inseriscono nel corpo della tabella i dati dei processi  (nome, tempo di arrivo, tempo di burst, tempo di burst rimanente, priorità)  si mostra il diagramma di Gantt di attivazione dei processi
-*/
-function start(){
-    let i;
-    rbt = bt;
-    // si inseriscono nel corpo della tabella i dati dei processi
-    let tableEl = document.getElementById("idTable");
-    let oldTBodyEl = tableEl.getElementsByTagName('tbody')[0];
-    let newTBodyEl = document.createElement("tbody");
-    for(i=0; i<p.length; i++) {
-        const trEl = newTBodyEl.insertRow();
-        let tdEl = trEl.insertCell();
-        tdEl.appendChild(document.createTextNode(p[i]));
-        tdEl = trEl.insertCell();
-        tdEl.appendChild(document.createTextNode(at[i]));
-        tdEl = trEl.insertCell();
-        tdEl.appendChild(document.createTextNode(bt[i]));
-        tdEl = trEl.insertCell();
-        tdEl.id = "idP" + i;
-        tdEl.appendChild(document.createTextNode(rbt[i]));
-        tdEl = trEl.insertCell();
-        tdEl.appendChild(document.createTextNode(pr[i]));
+
+document.getElementById('btnStart').addEventListener('click', () => {
+    if (processes.length === 0) return alert("Aggiungi almeno un processo!");
+    simulateSRTF();
+});
+
+document.getElementById('btnReset').addEventListener('click', () => {
+    processes = [];
+    updateTable();
+    document.getElementById('resultArea').classList.add('hidden');
+});
+
+function simulateSRTF() {
+    let tempProcesses = processes.map(p => ({ ...p }));
+    let currentTime = 0;
+    let completed = 0;
+    let ganttData = [];
+    let n = tempProcesses.length;
+
+    while (completed < n) {
+        let available = tempProcesses.filter(p => p.arrival <= currentTime && p.remaining > 0);
+
+        if (available.length > 0) {
+            available.sort((a, b) => a.remaining - b.remaining);
+            let currentP = available[0];
+
+            ganttData.push(currentP.id);
+            currentP.remaining--;
+            currentTime++;
+
+            if (currentP.remaining === 0) {
+                completed++;
+                currentP.finishTime = currentTime;
+                currentP.turnaround = currentP.finishTime - currentP.arrival;
+                currentP.waiting = currentP.turnaround - currentP.burst;
+            }
+        } else {
+            ganttData.push("Idle");
+            currentTime++;
+        }
     }
-    tableEl.replaceChild(newTBodyEl, oldTBodyEl);
-    document.getElementById("output").style.display = "block";
+    renderResults(ganttData);
+}
+function renderResults(gantt) {
+    const area = document.getElementById('resultArea');
+    const chart = document.getElementById('ganttChart');
+    area.classList.remove('hidden');
+
+    const colors = {
+        "Idle": "#444",
+        "P1": "#22c55e",
+        "P2": "#f59e0b",
+        "P3": "#ef4444",
+        "P4": "#3b82f6",
+        "P5": "#a855f7"
+    };
+
+    let blocks = [];
+    let current = gantt[0];
+    let length = 1;
+
+    for (let i = 1; i < gantt.length; i++) {
+        if (gantt[i] === current) {
+            length++;
+        } else {
+            blocks.push({ name: current, len: length });
+            current = gantt[i];
+            length = 1;
+        }
+    }
+    blocks.push({ name: current, len: length });
+
+    chart.innerHTML = blocks.map(b => `
+        <div class="gantt-block" 
+             style="flex:${b.len}; background:${colors[b.name] || '#38bdf8'}">
+            ${b.name}
+        </div>
+    `).join('');
 }
