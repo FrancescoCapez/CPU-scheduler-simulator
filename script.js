@@ -33,6 +33,7 @@ document.getElementById('btnReset').addEventListener('click', () => {
     processes = [];
     updateTable();
     document.getElementById('resultArea').classList.add('hidden');
+    document.getElementById('ganttChart').innerHTML = " ";
 });
 
 function simulateSRTF() {
