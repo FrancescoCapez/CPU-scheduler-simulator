@@ -4,61 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CPU Scheduler Pro - SRTF</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
-    <header>
-        <h1>CPU Scheduler Simulator</h1>
-        <p>Shortest Remaining Time First (SRTF):è un algoritmo di scheduling preemptive della CPU.
+
+<div class="container py-5">
+    <header class="mb-5">
+        <h1 class="display-5 fw-bold">CPU Scheduler Simulator</h1>
+        <p class="text-muted">
+            Shortest Remaining Time First (SRTF): è un algoritmo di scheduling preemptive della CPU.
             A ogni istante la CPU assegna il processore al processo con minor tempo di esecuzione rimanente.
             Se arriva un nuovo processo con tempo rimanente più breve, interrompe quello in esecuzione.
-            Riduce il tempo medio di attesa, ma può causare starvation per processi lunghi.</p>
+            Riduce il tempo medio di attesa, ma può causare starvation per processi lunghi.
+        </p>
     </header>
 
-    <div class="main-content">
-        <section class="input-panel">
-            <h3>Aggiungi Processo</h3>
-            <div class="form-group">
-                <label>ID Processo</label>
-                <input type="text" id="procId" placeholder="es. P1">
-            </div>
-            <div class="form-group">
-                <label>Arrival Time</label>
-                <input type="number" id="arrivalTime" min="0" placeholder="0">
-            </div>
-            <div class="form-group">
-                <label>Burst Time</label>
-                <input type="number" id="burstTime" min="1" placeholder="5">
-            </div>
-            <button id="btnAdd" class="btn-secondary">Inserisci Processo</button>
-            <div class="actions">
-                <button id="btnStart" class="btn-primary">Avvia Simulazione</button>
-                <button id="btnReset" class="btn-danger">Reset</button>
-            </div>
-        </section>
+    <section class="mb-5" style="max-width: 400px;">
+        <h3 class="h4 mb-4">Aggiungi Processo</h3>
+        <div class="mb-3 d-flex align-items-center">
+            <label class="form-label mb-0" style="width: 150px;">ID Processo</label>
+            <input type="text" id="idProcesso" class="form-control form-control-sm" placeholder="es. P1">
+        </div>
+        <div class="mb-3 d-flex align-items-center">
+            <label class="form-label mb-0" style="width: 150px;">Arrival Time</label>
+            <input type="number" id="tempoArrivo" class="form-control form-control-sm" placeholder="0">
+        </div>
+        <div class="mb-3 d-flex align-items-center">
+            <label class="form-label mb-0" style="width: 150px;">Burst Time</label>
+            <input type="number" id="tempoBurst" class="form-control form-control-sm" placeholder="5">
+        </div>
 
-        <section class="display-panel">
-            <h3>Lista Processi</h3>
-            <table id="processTable">
-                <thead>
-                <tr>
-                    <th>Processo</th>
-                    <th>Arrivo</th>
-                    <th>Burst</th>
-                </tr>
-                </thead>
-                <tbody id="processList">
-                </tbody>
-            </table>
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <button id="btnAggiungi" class="btn btn-dark btn-sm px-3">Inserisci Processo</button>
+            <button id="btnAvvia" class="btn btn-dark btn-sm px-3">Avvia Simulazione</button>
+            <button id="btnReset" class="btn btn-secondary btn-sm px-3">Reset</button>
+        </div>
+    </section>
 
-            <div id="resultArea" class="hidden">
-                <h3>Diagramma di Gantt</h3>
-                <div id="ganttChart" class="gantt-container"></div>
+    <section class="mb-5">
+        <h3 class="h4 mb-3">Lista Processi</h3>
+        <table class="table table-sm border-top">
+            <thead class="table-light">
+            <tr>
+                <th class="small text-uppercase">Processo</th>
+                <th class="small text-uppercase">Arrivo</th>
+                <th class="small text-uppercase text-center">Burst</th>
+            </tr>
+            </thead>
+            <tbody id="tabellaProcessi">
+            </tbody>
+        </table>
+    </section>
+
+    <section id="areaRisultati" class="d-none">
+        <h3 class="h4 mb-3">Diagramma di Gantt</h3>
+        <div id="graficoGantt" class="gantt-container rounded border mb-4"></div>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="p-3 border rounded bg-light text-center">
+                    <div class="small text-uppercase text-muted">Burst Medio</div>
+                    <div id="mediaBurst" class="h5 fw-bold mb-0">-</div>
+                </div>
             </div>
-        </section>
-    </div>
+            <div class="col-md-4">
+                <div class="p-3 border rounded bg-light text-center">
+                    <div class="small text-uppercase text-muted">Attesa Media</div>
+                    <div id="mediaAttesa" class="h5 fw-bold mb-0">-</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 border rounded bg-light text-center">
+                    <div class="small text-uppercase text-muted">Efficienza</div>
+                    <div id="efficienzaCpu" class="h5 fw-bold mb-0">-</div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
+
 <script src="script.js"></script>
 </body>
 </html>
